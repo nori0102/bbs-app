@@ -2,6 +2,7 @@
 
 import { supabase } from "@/lib/supabaseClient";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 type Post = {
   id: number;
@@ -39,6 +40,9 @@ export default function HomePage() {
       setNewPost("");
       setName("");
       fetchPosts();
+      toast.success("投稿しました！")
+    } else {
+      toast.error("投稿に失敗しました。")
     }
 
     setLoading(false);
@@ -46,7 +50,12 @@ export default function HomePage() {
 
   const handleDelete = async (id: number) => {
     const {error} = await supabase.from("posts").delete().eq("id",id);
-    if(!error) fetchPosts();
+    if(!error) {
+      fetchPosts();
+      toast.success("削除しました。")
+    } else {
+      toast.error("削除に失敗しました。")
+    }
   }
 
   const handleEdit = (post: Post) => {
@@ -66,7 +75,12 @@ export default function HomePage() {
 
     if(!error){
       setEditingId(null);
+      setEditContent("");
+      setEditName("");
       fetchPosts();
+      toast.success("更新しました。");
+    } else {
+      toast.error("更新に失敗しました。")
     }
   }
 
