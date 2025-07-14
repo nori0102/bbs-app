@@ -35,6 +35,11 @@ export default function HomePage() {
     setLoading(false);
   }
 
+  const handleDelete = async (id: number) => {
+    const {error} = await supabase.from("posts").delete().eq("id",id);
+    if(!error) fetchPosts();
+  }
+
   useEffect(() => {
     fetchPosts();
   }, []);
@@ -64,9 +69,17 @@ export default function HomePage() {
         {posts.map((post) => (
           <li key={post.id} className="p-4 border rounded shadow">
             <p>{post.content}</p>
-            <span className="text-sm text-gray-500 block mt-2">
+            <div className="flex justify-between">
+            <span className="text-sm text-gray-500 block mt-2 mb-2">
               投稿日: {new Date(post.created_at).toLocaleString("ja-JP")}
             </span>
+            <button
+            onClick={()=> handleDelete(post.id)}
+            className="bg-red-500 hover:underline rounded py-1 px-2 text-white text-sm"
+              >
+                削除
+              </button>
+            </div>
           </li>
         ))}
       </ul>
